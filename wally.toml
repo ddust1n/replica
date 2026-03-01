@@ -1,7 +1,7 @@
 [package]
 name = "ddust1n/replica"
 description = "Fork of Replica - Roblox server to client state replication solution which lets the developer subscribe certain players to certain states"
-version = "0.0.2"
+version = "0.0.3"
 license = "MIT"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"

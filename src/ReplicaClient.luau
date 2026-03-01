@@ -71,6 +71,7 @@ local ReplicaShared = script.Parent:FindFirstChild("ReplicaShared")
 local Remote = require(ReplicaShared.Remote)
 local Signal = require(ReplicaShared.Signal)
 local Maid = require(ReplicaShared.Maid)
+local Types = require(ReplicaShared.Types)
 
 ----- Private -----
 
@@ -142,34 +143,7 @@ end
 
 ----- Public -----
 
-export type Replica = {
-	Tags: { [any]: any },
-	Data: { [any]: any },
-	Id: number,
-	Token: string,
-	Parent: Replica?,
-	Children: { [Replica]: boolean? },
-	BoundInstance: Instance?,
-	OnClientEvent: { Connect: (self: any, listener: (...any) -> ()) -> { Disconnect: (self: any) -> () } },
-	Maid: typeof(Maid),
-
-	OnSet: (self: any, path: {}, listener: () -> ()) -> Signal.Connection,
-	OnWrite: (self: any, function_name: string, listener: (...any) -> ()) -> Signal.Connection,
-	OnChange: (
-		self: any,
-		listener: (
-			action: "Set" | "SetValues" | "TableInsert" | "TableRemove",
-			path: { any },
-			param1: any,
-			param2: any?
-		) -> ()
-	) -> Signal.Connection,
-	GetChild: (self: any, token: string) -> Replica?,
-	FireServer: (self: any, ...any) -> (),
-	UFireServer: (self: any, ...any) -> (),
-	Identify: (self: any) -> string,
-	IsActive: (self: any) -> boolean,
-}
+export type Replica<Data> = Types.ReplicaClient<Data>
 
 local FreeRunnerThread
 
@@ -256,7 +230,7 @@ function Replica.RequestData()
 	end)
 end
 
-function Replica.OnNew(token: string, listener: (replica: Replica) -> ()): Signal.Connection
+function Replica.OnNew<Data>(token: string, listener: (replica: Replica<Data>) -> ()): Signal.Connection
 	if type(token) ~= "string" then
 		error(`[{script.Name}]: "token" must be a string`)
 	end
@@ -337,15 +311,17 @@ function Replica:OnChange(listener: (
 	return self.changed_listeners:Connect(listener)
 end
 
-function Replica:GetChild(token: string): Replica?
+function Replica:GetChild(token: string): Replica<{ [any]: any }>?
 	if type(token) ~= "string" then
 		error(`[{script.Name}]: "token" must be a string`)
 	end
+
 	for replica in pairs(self.Children) do
 		if replica.Token == token then
 			return replica
 		end
 	end
+
 	return nil
 end
 

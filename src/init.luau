@@ -9,11 +9,14 @@ local Public = {}
 
 local RunService = game:GetService("RunService")
 
--- [[ Dependencies ]] --
-
 -- [[ Modules ]] --
 
+local Types = require(script.ReplicaShared.Types)
+
 -- [[ Types ]] --
+
+export type ReplicaClient<Data> = Types.ReplicaClient<Data>
+export type ReplicaServer<Data> = Types.ReplicaServer<Data>
 
 -- [[ Constants ]] --
 

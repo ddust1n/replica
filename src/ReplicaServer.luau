@@ -90,6 +90,7 @@ local RateLimit = require(ReplicaShared.RateLimit)
 local Remote = require(ReplicaShared.Remote)
 local Signal = require(ReplicaShared.Signal)
 local Maid = require(ReplicaShared.Maid)
+local Types = require(ReplicaShared.Types)
 
 ----- Private -----
 
@@ -205,36 +206,7 @@ end
 
 ----- Public -----
 
-export type Replica = {
-	Tags: { [any]: any },
-	Data: { [any]: any },
-	Id: number,
-	Token: string,
-	Parent: Replica?,
-	Children: { [Replica]: boolean? },
-	BoundInstance: Instance?,
-	OnServerEvent: { Connect: (self: any, listener: (Player, ...any) -> ()) -> { Disconnect: (self: any) -> () } },
-	Maid: typeof(Maid),
-
-	Set: (self: any, path: { string }, value: any) -> (),
-	SetValues: (self: any, path: { string }, values: { [string]: any }) -> (),
-	TableInsert: (self: any, path: { string }, value: any, index: number?) -> number,
-	TableRemove: (self: any, path: { string }, index: number) -> any,
-	Write: (self: any, function_name: string, ...any) -> ...any,
-	FireClient: (self: any, player: Player, ...any) -> (),
-	FireAllClients: (self: any, ...any) -> (),
-	UFireClient: (self: any, player: Player, ...any) -> (),
-	UFireAllClients: (self: any, ...any) -> (),
-	SetParent: (self: any, new_parent: Replica) -> (),
-	BindToInstance: (self: any, instance: Instance) -> (),
-	Replicate: (self: any) -> (),
-	DontReplicate: (self: any) -> (),
-	Subscribe: (self: any, player: Player) -> (),
-	Unsubscribe: (self: any, player: Player) -> (),
-	Identify: (self: any) -> string,
-	IsActive: (self: any) -> boolean,
-	Destroy: (self: any) -> (),
-}
+export type Replica<Data> = Types.ReplicaServer<Data>
 
 local Replica = {
 	ReadyPlayers = ReadyPlayers,
@@ -269,7 +241,9 @@ function Replica.Token(name: string)
 	return self
 end
 
-function Replica.New(params: { Token: typeof(ReplicaToken), Tags: {}?, Data: {}?, WriteLib: ModuleScript? }): Replica
+function Replica.New<Data>(
+	params: { Token: typeof(ReplicaToken), Tags: {}?, Data: Data?, WriteLib: ModuleScript? }
+): Replica<Data>
 	local token = params.Token
 	local tags = params.Tags or {}
 	local data = params.Data or {}
@@ -316,7 +290,7 @@ function Replica.New(params: { Token: typeof(ReplicaToken), Tags: {}?, Data: {}?
 	return self
 end
 
-function Replica.FromId(id: number): Replica
+function Replica.FromId<Data>(id: number): Replica<Data>
 	return Replicas[id]
 end
 

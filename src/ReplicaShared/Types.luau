@@ -2,21 +2,22 @@ local ReplicaShared = script.Parent
 
 local Signal = require(ReplicaShared.Signal)
 
-export type ReplicaClient<Data> = {
-	Tags: { [any]: any },
+export type ReplicaClient<Data, Tags> = {
 	Data: Data,
+	Tags: Tags,
+
 	Id: number,
 	Token: string,
-	Parent: ReplicaClient<Data>?,
-	Children: { [ReplicaClient<Data>]: boolean? },
+	Parent: ReplicaClient<Data, Tags>?,
+	Children: { [ReplicaClient<Data, Tags>]: boolean? },
 	BoundInstance: Instance?,
 	OnClientEvent: { Connect: (self: any, listener: (...any) -> ()) -> { Disconnect: (self: any) -> () } },
 	Maid: typeof(require(ReplicaShared.Maid)),
 
-	OnSet: (self: ReplicaClient<Data>, path: {}, listener: () -> ()) -> Signal.Connection,
-	OnWrite: (self: ReplicaClient<Data>, function_name: string, listener: (...any) -> ()) -> Signal.Connection,
+	OnSet: (self: ReplicaClient<Data, Tags>, path: {}, listener: () -> ()) -> Signal.Connection,
+	OnWrite: (self: ReplicaClient<Data, Tags>, function_name: string, listener: (...any) -> ()) -> Signal.Connection,
 	OnChange: (
-		self: ReplicaClient<Data>,
+		self: ReplicaClient<Data, Tags>,
 		listener: (
 			action: "Set" | "SetValues" | "TableInsert" | "TableRemove",
 			path: { any },
@@ -24,42 +25,46 @@ export type ReplicaClient<Data> = {
 			param2: any?
 		) -> ()
 	) -> Signal.Connection,
-	GetChild: (self: ReplicaClient<Data>, token: string) -> ReplicaClient<Data>?,
-	FireServer: (self: ReplicaClient<Data>, ...any) -> (),
-	UFireServer: (self: ReplicaClient<Data>, ...any) -> (),
-	Identify: (self: ReplicaClient<Data>) -> string,
-	IsActive: (self: ReplicaClient<Data>) -> boolean,
+	GetChild: (self: ReplicaClient<Data, Tags>, token: string) -> ReplicaClient<Data, Tags>?,
+	FireServer: (self: ReplicaClient<Data, Tags>, ...any) -> (),
+	UFireServer: (self: ReplicaClient<Data, Tags>, ...any) -> (),
+	Identify: (self: ReplicaClient<Data, Tags>) -> string,
+	IsActive: (self: ReplicaClient<Data, Tags>) -> boolean,
 }
 
-export type ReplicaServer<Data> = {
-	Tags: { [any]: any },
-	Data: Data,
+type ReplicaServerBase = {
 	Id: number,
 	Token: string,
-	Parent: ReplicaServer<Data>?,
-	Children: { [ReplicaServer<Data>]: boolean? },
+	Parent: ReplicaServerBase?,
+	Children: { [ReplicaServerBase]: boolean? },
 	BoundInstance: Instance?,
 	OnServerEvent: { Connect: (self: any, listener: (Player, ...any) -> ()) -> { Disconnect: (self: any) -> () } },
 	Maid: typeof(require(ReplicaShared.Maid)),
 
-	Set: (self: ReplicaServer<Data>, path: { string }, value: any) -> (),
-	SetValues: (self: ReplicaServer<Data>, path: { string }, values: { [string]: any }) -> (),
-	TableInsert: (self: ReplicaServer<Data>, path: { string }, value: any, index: number?) -> number,
-	TableRemove: (self: ReplicaServer<Data>, path: { string }, index: number) -> any,
-	Write: (self: ReplicaServer<Data>, function_name: string, ...any) -> ...any,
-	FireClient: (self: ReplicaServer<Data>, player: Player, ...any) -> (),
-	FireAllClients: (self: ReplicaServer<Data>, ...any) -> (),
-	UFireClient: (self: ReplicaServer<Data>, player: Player, ...any) -> (),
-	UFireAllClients: (self: ReplicaServer<Data>, ...any) -> (),
-	SetParent: (self: ReplicaServer<Data>, new_parent: ReplicaServer<Data>) -> (),
-	BindToInstance: (self: ReplicaServer<Data>, instance: Instance) -> (),
-	Replicate: (self: ReplicaServer<Data>) -> (),
-	DontReplicate: (self: ReplicaServer<Data>) -> (),
-	Subscribe: (self: ReplicaServer<Data>, player: Player) -> (),
-	Unsubscribe: (self: ReplicaServer<Data>, player: Player) -> (),
-	Identify: (self: ReplicaServer<Data>) -> string,
-	IsActive: (self: ReplicaServer<Data>) -> boolean,
-	Destroy: (self: ReplicaServer<Data>) -> (),
+	FireClient: (self: ReplicaServerBase, player: Player, ...any) -> (),
+	FireAllClients: (self: ReplicaServerBase, ...any) -> (),
+	UFireClient: (self: ReplicaServerBase, player: Player, ...any) -> (),
+	UFireAllClients: (self: ReplicaServerBase, ...any) -> (),
+	SetParent: (self: ReplicaServerBase, new_parent: ReplicaServerBase) -> (),
+	BindToInstance: (self: ReplicaServerBase, instance: Instance) -> (),
+	Replicate: (self: ReplicaServerBase) -> (),
+	DontReplicate: (self: ReplicaServerBase) -> (),
+	Subscribe: (self: ReplicaServerBase, player: Player) -> (),
+	Unsubscribe: (self: ReplicaServerBase, player: Player) -> (),
+	Identify: (self: ReplicaServerBase) -> string,
+	IsActive: (self: ReplicaServerBase) -> boolean,
+	Destroy: (self: ReplicaServerBase) -> (),
+}
+
+export type ReplicaServer<Data, Tags> = ReplicaServerBase & {
+	Data: Data,
+	Tags: Tags,
+
+	Set: (self: ReplicaServer<Data, Tags>, path: { string }, value: any) -> (),
+	SetValues: (self: ReplicaServer<Data, Tags>, path: { string }, values: { [string]: any }) -> (),
+	TableInsert: (self: ReplicaServer<Data, Tags>, path: { string }, value: any, index: number?) -> number,
+	TableRemove: (self: ReplicaServer<Data, Tags>, path: { string }, index: number) -> any,
+	Write: (self: ReplicaServer<Data, Tags>, function_name: string, ...any) -> ...any,
 }
 
 return nil

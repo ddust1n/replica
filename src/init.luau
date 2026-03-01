@@ -15,8 +15,8 @@ local Types = require(script.ReplicaShared.Types)
 
 -- [[ Types ]] --
 
-export type ReplicaClient<Data> = Types.ReplicaClient<Data>
-export type ReplicaServer<Data> = Types.ReplicaServer<Data>
+export type ReplicaClient<Data, Tags> = Types.ReplicaClient<Data, Tags>
+export type ReplicaServer<Data, Tags> = Types.ReplicaServer<Data, Tags>
 
 -- [[ Constants ]] --
 

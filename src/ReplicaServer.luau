@@ -206,7 +206,7 @@ end
 
 ----- Public -----
 
-export type Replica<Data> = Types.ReplicaServer<Data>
+type Replica<Data, Tags> = Types.ReplicaServer<Data, Tags>
 
 local Replica = {
 	ReadyPlayers = ReadyPlayers,
@@ -241,9 +241,9 @@ function Replica.Token(name: string)
 	return self
 end
 
-function Replica.New<Data>(
-	params: { Token: typeof(ReplicaToken), Tags: {}?, Data: Data?, WriteLib: ModuleScript? }
-): Replica<Data>
+function Replica.New<Data, Tags>(
+	params: { Token: typeof(ReplicaToken), Tags: Tags?, Data: Data?, WriteLib: ModuleScript? }
+): Replica<Data, Tags>
 	local token = params.Token
 	local tags = params.Tags or {}
 	local data = params.Data or {}
@@ -290,7 +290,7 @@ function Replica.New<Data>(
 	return self
 end
 
-function Replica.FromId<Data>(id: number): Replica<Data>
+function Replica.FromId<Data, Tags>(id: number): Replica<Data, Tags>
 	return Replicas[id]
 end
 

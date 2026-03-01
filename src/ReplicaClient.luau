@@ -143,7 +143,7 @@ end
 
 ----- Public -----
 
-export type Replica<Data> = Types.ReplicaClient<Data>
+type Replica<Data, Tags> = Types.ReplicaClient<Data, Tags>
 
 local FreeRunnerThread
 
@@ -230,7 +230,7 @@ function Replica.RequestData()
 	end)
 end
 
-function Replica.OnNew<Data>(token: string, listener: (replica: Replica<Data>) -> ()): Signal.Connection
+function Replica.OnNew<Data, Tags>(token: string, listener: (replica: Replica<Data, Tags>) -> ()): Signal.Connection
 	if type(token) ~= "string" then
 		error(`[{script.Name}]: "token" must be a string`)
 	end
@@ -311,7 +311,7 @@ function Replica:OnChange(listener: (
 	return self.changed_listeners:Connect(listener)
 end
 
-function Replica:GetChild(token: string): Replica<{ [any]: any }>?
+function Replica:GetChild(token: string): Replica<{ [any]: any }, { [any]: any }>?
 	if type(token) ~= "string" then
 		error(`[{script.Name}]: "token" must be a string`)
 	end

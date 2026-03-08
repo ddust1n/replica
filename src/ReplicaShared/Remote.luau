@@ -13,8 +13,8 @@ MAD STUDIO
 
 ----- Private -----
 
-local CONTAINER_NAME = "RemoteEvents"
-local REMOTE_MISSING_TIME = 20
+local CONTAINER_NAME = "Network"
+local REMOTE_MISSING_TIME = 15
 
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")

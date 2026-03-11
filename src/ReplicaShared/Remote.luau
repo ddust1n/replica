@@ -18,8 +18,6 @@ local REMOTE_MISSING_TIME = 15
 
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-local IsStudio = RunService:IsStudio()
 local IsServer = RunService:IsServer()
 local DefinedRemotes = {} -- [name] = true, ...
 
@@ -28,11 +26,7 @@ do
 	if IsServer == true then
 		Container = ReplicatedStorage:FindFirstChild(CONTAINER_NAME)
 
-		if Container ~= nil then
-			if IsStudio == true then
-				warn(`[{script.Name}]: ReplicatedStorage "{CONTAINER_NAME}" container was already defined`)
-			end
-		else
+		if Container == nil then
 			Container = Instance.new("Folder")
 			Container.Name = CONTAINER_NAME
 			Container.Parent = ReplicatedStorage

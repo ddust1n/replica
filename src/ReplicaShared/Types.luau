@@ -2,6 +2,10 @@ local ReplicaShared = script.Parent
 
 local Signal = require(ReplicaShared.Signal)
 
+export type Maid = {
+	Add: (object: any) -> (),
+}
+
 export type ReplicaClient<Data, Tags> = {
 	Data: Data,
 	Tags: Tags,
@@ -12,7 +16,7 @@ export type ReplicaClient<Data, Tags> = {
 	Children: { [ReplicaClient<Data, Tags>]: boolean? },
 	BoundInstance: Instance?,
 	OnClientEvent: { Connect: (self: any, listener: (...any) -> ()) -> { Disconnect: (self: any) -> () } },
-	Maid: typeof(require(ReplicaShared.Maid)),
+	Maid: Maid,
 
 	OnSet: (self: ReplicaClient<Data, Tags>, path: {}, listener: () -> ()) -> Signal.Connection,
 	OnWrite: (self: ReplicaClient<Data, Tags>, function_name: string, listener: (...any) -> ()) -> Signal.Connection,
@@ -39,7 +43,7 @@ type ReplicaServerBase = {
 	Children: { [ReplicaServerBase]: boolean? },
 	BoundInstance: Instance?,
 	OnServerEvent: { Connect: (self: any, listener: (Player, ...any) -> ()) -> { Disconnect: (self: any) -> () } },
-	Maid: typeof(require(ReplicaShared.Maid)),
+	Maid: Maid,
 
 	FireClient: (self: ReplicaServerBase, player: Player, ...any) -> (),
 	FireAllClients: (self: ReplicaServerBase, ...any) -> (),

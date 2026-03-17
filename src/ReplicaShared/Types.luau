@@ -3,7 +3,7 @@ local ReplicaShared = script.Parent
 local Signal = require(ReplicaShared.Signal)
 
 export type Maid = {
-	Add: (object: any) -> (),
+	Add: (self: Maid, object: any) -> any,
 }
 
 export type ReplicaClient<Data, Tags> = {
